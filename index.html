@@ -5,81 +5,42 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Great Barrier Reef Coral Bleaching Data Studio (NOAA CRW)</title>
 
-  <!-- Leaflet (map) -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-  <!-- Chart.js (graphs) -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
   <style>
     :root{
-      --bg:#0b1320;
-      --card:#121c2e;
-      --text:#e9eefb;
-      --muted:#aab7d1;
-      --border:rgba(255,255,255,.12);
-      --btn:#1f2f4f;
-      --btn2:#253a63;
-      --good:#39d98a;
-      --warn:#f7c948;
-      --bad:#ff6b6b;
-      --accent:#7aa7ff;
+      --bg:#0b1320; --card:#121c2e; --text:#e9eefb; --muted:#aab7d1; --border:rgba(255,255,255,.12);
+      --btn:#1f2f4f; --btn2:#253a63; --good:#39d98a; --warn:#f7c948; --bad:#ff6b6b; --accent:#7aa7ff;
     }
     body{ margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; background:var(--bg); color:var(--text); }
     header{ padding:18px 18px 10px; border-bottom:1px solid var(--border); }
-    h1{ margin:0 0 6px; font-size:20px; letter-spacing:.2px; }
+    h1{ margin:0 0 6px; font-size:20px; }
     .sub{ color:var(--muted); font-size:13px; line-height:1.35; }
     .wrap{ display:grid; grid-template-columns: 420px 1fr; gap:14px; padding:14px; }
     @media (max-width: 980px){ .wrap{ grid-template-columns:1fr; } }
-
     .card{ background:var(--card); border:1px solid var(--border); border-radius:14px; padding:12px; }
     .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
     .pill{ background:rgba(255,255,255,.08); border:1px solid var(--border); padding:6px 10px; border-radius:999px; font-size:12px; color:var(--muted); }
-    button{
-      background:var(--btn);
-      color:var(--text);
-      border:1px solid var(--border);
-      border-radius:10px;
-      padding:9px 10px;
-      cursor:pointer;
-      font-weight:600;
-      font-size:13px;
-    }
+    button{ background:var(--btn); color:var(--text); border:1px solid var(--border); border-radius:10px; padding:9px 10px; cursor:pointer; font-weight:600; font-size:13px; }
     button:hover{ background:var(--btn2); }
     button:disabled{ opacity:.55; cursor:not-allowed; }
     .tiny{ font-size:12px; color:var(--muted); }
     .label{ font-size:12px; color:var(--muted); margin:6px 0 6px; }
-    .check{ display:flex; gap:8px; align-items:center; font-size:13px; color:var(--text); }
+    .check{ display:flex; gap:8px; align-items:center; font-size:13px; }
     .check input{ transform:translateY(1px); }
-
     #map{ height:360px; border-radius:12px; overflow:hidden; border:1px solid var(--border); }
     #chartWrap{ height:420px; }
     canvas{ width:100% !important; height:100% !important; }
-
-    .risk{
-      display:flex; align-items:center; justify-content:space-between;
-      padding:10px 12px; border-radius:12px; border:1px solid var(--border);
-      background:rgba(255,255,255,.06);
-      margin-top:10px;
-    }
+    .risk{ display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border-radius:12px; border:1px solid var(--border); background:rgba(255,255,255,.06); margin-top:10px; }
     .risk strong{ font-size:13px; }
-    .risk .badge{
-      font-size:12px; font-weight:800;
-      padding:6px 10px; border-radius:999px;
-      border:1px solid var(--border);
-    }
+    .risk .badge{ font-size:12px; font-weight:800; padding:6px 10px; border-radius:999px; border:1px solid var(--border); }
     .badge.good{ background:rgba(57,217,138,.14); color:var(--good); }
     .badge.warn{ background:rgba(247,201,72,.14); color:var(--warn); }
     .badge.bad{ background:rgba(255,107,107,.14); color:var(--bad); }
-
-    .progress{
-      margin-top:10px;
-      height:10px; border-radius:999px;
-      background:rgba(255,255,255,.08);
-      overflow:hidden;
-      border:1px solid var(--border);
-    }
+    .progress{ margin-top:10px; height:10px; border-radius:999px; background:rgba(255,255,255,.08); overflow:hidden; border:1px solid var(--border); }
     .bar{ height:100%; width:0%; background:var(--accent); transition:width .2s ease; }
     .error{ color:#ffb3b3; font-size:13px; margin-top:10px; white-space:pre-wrap; }
     a{ color:var(--accent); }
@@ -91,12 +52,12 @@
 <header>
   <h1>Great Barrier Reef Coral Bleaching Data Studio</h1>
   <div class="sub">
-    Interactive thermal-stress exploration using <b>NOAA Coral Reef Watch (CRW)</b> daily 5km products (via ERDDAP). Click a reef location to load the last 5 years.
+    Interactive thermal-stress exploration using <b>NOAA Coral Reef Watch</b> daily 5km products (via ERDDAP).
+    Click a reef location to load the last 5 years.
   </div>
 </header>
 
 <div class="wrap">
-  <!-- LEFT: controls + map -->
   <section class="card">
     <div class="row">
       <span class="pill">Time range: <b>Last 5 years</b></span>
@@ -122,9 +83,7 @@
       <div class="badge good" id="riskBadge">—</div>
     </div>
 
-    <div class="progress" aria-label="Loading progress">
-      <div class="bar" id="bar"></div>
-    </div>
+    <div class="progress"><div class="bar" id="bar"></div></div>
 
     <div class="label">Variables to display</div>
     <label class="check"><input type="checkbox" id="showSST" checked> Sea Surface Temperature (SST)</label>
@@ -137,70 +96,56 @@
     </div>
 
     <div class="error" id="err" hidden></div>
+
     <div class="tiny" style="margin-top:10px;">
-      Tip: If you click land or a point too close to shore, you may get missing values (NaNs).
-      Try a nearby offshore point.
+      <b>Important:</b> We “snap” your click to the nearest NOAA 5km grid cell.
+      If you pick land or a missing pixel, try a point farther offshore.
     </div>
   </section>
 
-  <!-- RIGHT: chart -->
   <section class="card">
     <div class="row" style="justify-content:space-between;">
       <div>
         <div class="pill" id="locPill">Location: —</div>
         <div class="tiny" id="metaLine">Datasets: SST (noaacrwsstDaily), HotSpot (noaacrwhotspotDaily), DHW (noaacrwdhwDaily)</div>
+        <div class="tiny" id="snapLine"></div>
       </div>
       <div class="tiny" id="updatedLine"></div>
     </div>
 
-    <div id="chartWrap">
-      <canvas id="chart"></canvas>
-    </div>
+    <div id="chartWrap"><canvas id="chart"></canvas></div>
 
     <div class="tiny" style="margin-top:10px;">
       Data source: NOAA Coral Reef Watch daily 5km products via CoastWatch ERDDAP.
-      Learn more about DHW and thermal stress:
       <a href="https://coralreefwatch.noaa.gov/product/5km/tutorial/crw10a_dhw_product.php" target="_blank" rel="noopener">DHW explainer</a>
     </div>
   </section>
 </div>
 
 <div class="footer">
-  <b>Classroom note:</b> This tool uses satellite-derived/modelled gridded products at 0.05° (~5km) resolution and daily timesteps.
-  It supports data interpretation, trend analysis, and evidence-based claims about heat stress and bleaching risk.
+  <b>Classroom note:</b> This uses satellite-derived/modelled gridded products at 0.05° (~5km) resolution and daily timesteps.
 </div>
 
 <script>
-  // -----------------------------
-  // CONFIG: ERDDAP endpoints
-  // -----------------------------
+  // ---- ERDDAP ----
   const ERDDAP_BASE = "https://coastwatch.noaa.gov/erddap/griddap";
   const DATASETS = {
-    sst: { id: "noaacrwsstDaily", var: "analysed_sst", label: "SST (°C)" },
-    hotspot: { id: "noaacrwhotspotDaily", var: "hotspot", label: "HotSpot (°C)" },
-    dhw: { id: "noaacrwdhwDaily", var: "degree_heating_week", label: "DHW (°C-weeks)" }
+    sst:     { id: "noaacrwsstDaily",     var: "analysed_sst" },
+    hotspot: { id: "noaacrwhotspotDaily", var: "hotspot" },
+    dhw:     { id: "noaacrwdhwDaily",     var: "degree_heating_week" }
   };
-
-  // We’ll request 5 years, but chunk into ~1-year windows to be kind to the server (NOAA guidance).
   const YEARS_BACK = 5;
 
-  // Great Barrier Reef map bounds-ish (loose)
-  const GBR_CENTER = [-18.5, 147.0];
-  const GBR_ZOOM = 5;
+  // NOAA CRW 5km grid centers:
+  // latitude:  89.975 to -89.975 step -0.05
+  // longitude: -179.975 to 179.975 step 0.05
+  const LAT0 = 89.975,  LON0 = -179.975,  STEP = 0.05;
 
-  // -----------------------------
-  // UI STATE
-  // -----------------------------
-  let selected = {
-    name: "Custom point (click map)",
-    lat: -18.2871,
-    lon: 147.6992
-  };
-  let marker = null;
-
+  // ---- UI ----
   const el = (id) => document.getElementById(id);
   const statusPill = el("statusPill");
   const locPill = el("locPill");
+  const snapLine = el("snapLine");
   const updatedLine = el("updatedLine");
   const errBox = el("err");
   const bar = el("bar");
@@ -215,138 +160,45 @@
   const riskBadge = el("riskBadge");
   const riskDetail = el("riskDetail");
 
-  // -----------------------------
-  // Map
-  // -----------------------------
-  const map = L.map("map", { scrollWheelZoom: false }).setView(GBR_CENTER, GBR_ZOOM);
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    attribution: '&copy; OpenStreetMap contributors'
-  }).addTo(map);
-
-  function setMarker(lat, lon){
-    if(marker) marker.remove();
-    marker = L.marker([lat, lon]).addTo(map);
+  // ---- helpers ----
+  function setStatus(t){ statusPill.textContent = t; }
+  function setError(msg){ errBox.hidden = !msg; errBox.textContent = msg || ""; }
+  function setProgress(p){ bar.style.width = `${Math.max(0, Math.min(100, p))}%`; }
+  function setLoading(on){
+    loadBtn.disabled = on;
+    document.querySelectorAll(".preset").forEach(b => b.disabled = on);
+    setStatus(on ? "Loading…" : "Ready");
   }
-  setMarker(selected.lat, selected.lon);
+  function roundTo(n, d){ const f = 10**d; return Math.round(n*f)/f; }
 
-  map.on("click", (e) => {
-    selected.lat = roundTo(e.latlng.lat, 5);
-    selected.lon = roundTo(e.latlng.lng, 5);
-    selected.name = "Custom point";
-    setMarker(selected.lat, selected.lon);
-    updateLocationPill();
-  });
-
-  document.querySelectorAll(".preset").forEach(btn => {
-    btn.addEventListener("click", () => {
-      selected.name = btn.dataset.name;
-      selected.lat = parseFloat(btn.dataset.lat);
-      selected.lon = parseFloat(btn.dataset.lon);
-      setMarker(selected.lat, selected.lon);
-      map.setView([selected.lat, selected.lon], 7);
-      updateLocationPill();
-    });
-  });
-
-  function updateLocationPill(){
-    locPill.textContent = `Location: ${selected.name} (${selected.lat.toFixed(3)}, ${selected.lon.toFixed(3)})`;
+  // Snap raw lat/lon to nearest NOAA grid center
+  function snapLat(lat){
+    const idx = Math.round((LAT0 - lat) / STEP);
+    return LAT0 - idx * STEP;
   }
-  updateLocationPill();
-
-  // -----------------------------
-  // Chart
-  // -----------------------------
-  const ctx = el("chart");
-  const chart = new Chart(ctx, {
-    type: "line",
-    data: { labels: [], datasets: [] },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      interaction: { mode: "index", intersect: false },
-      plugins: {
-        legend: { labels: { color: "#e9eefb" } },
-        tooltip: { enabled: true }
-      },
-      scales: {
-        x: {
-          ticks: { color: "#aab7d1", maxTicksLimit: 10 },
-          grid: { color: "rgba(255,255,255,.08)" }
-        },
-        y: {
-          ticks: { color: "#aab7d1" },
-          grid: { color: "rgba(255,255,255,.08)" }
-        }
-      }
-    }
-  });
-
-  function rebuildDatasets(series){
-    const ds = [];
-
-    if(showSST.checked){
-      ds.push({
-        label: "SST (°C)",
-        data: series.map(d => d.sst),
-        borderWidth: 2,
-        pointRadius: 0,
-        tension: 0.2
-      });
-    }
-    if(showHotSpot.checked){
-      ds.push({
-        label: "HotSpot (°C)",
-        data: series.map(d => d.hotspot),
-        borderWidth: 2,
-        pointRadius: 0,
-        tension: 0.2
-      });
-    }
-    if(showDHW.checked){
-      ds.push({
-        label: "DHW (°C-weeks)",
-        data: series.map(d => d.dhw),
-        borderWidth: 2,
-        pointRadius: 0,
-        tension: 0.2
-      });
-    }
-
-    chart.data.labels = series.map(d => d.date);
-    chart.data.datasets = ds;
-    chart.update();
+  function snapLon(lon){
+    const idx = Math.round((lon - LON0) / STEP);
+    return LON0 + idx * STEP;
   }
 
-  [showSST, showHotSpot, showDHW].forEach(cb => cb.addEventListener("change", () => {
-    const cached = getCache();
-    if(cached?.series?.length) rebuildDatasets(cached.series);
-  }));
-
-  // -----------------------------
-  // Data fetching helpers
-  // -----------------------------
-  function roundTo(n, decimals){
-    const f = Math.pow(10, decimals);
-    return Math.round(n * f) / f;
+  // Use “today - 3 days” as end date because CRW can be "now-3days"
+  function dateDaysAgo(days){
+    const d = new Date();
+    d.setUTCDate(d.getUTCDate() - days);
+    return d;
   }
-
+  function yearsAgoDate(years, endDate){
+    const d = new Date(endDate.getTime());
+    d.setUTCFullYear(d.getUTCFullYear() - years);
+    return d;
+  }
   function isoDate(d){
-    // ERDDAP often uses Zulu timestamps; NOAA CRW daily is 12:00Z in many datasets
-    // We'll set to 12:00:00Z to align with daily timesteps.
     const yyyy = d.getUTCFullYear();
     const mm = String(d.getUTCMonth()+1).padStart(2,"0");
     const dd = String(d.getUTCDate()).padStart(2,"0");
     return `${yyyy}-${mm}-${dd}T12:00:00Z`;
   }
-
-  function yearsAgoDate(years){
-    const d = new Date();
-    d.setUTCFullYear(d.getUTCFullYear() - years);
-    return d;
-  }
-
   function chunkYears(startDate, endDate){
-    // Returns array of [startISO, endISO] chunks ~1 year each
     const chunks = [];
     let cur = new Date(startDate.getTime());
     while(cur < endDate){
@@ -358,101 +210,124 @@
     }
     return chunks;
   }
-
   function buildErddapCsvUrl(datasetId, varName, startISO, endISO, lat, lon){
-    // griddap query pattern: var[(start):1:(end)][(lat):(lat)][(lon):(lon)]
-    // We use same value for start/stop of lat & lon to pull nearest grid point.
-    const q = `${encodeURIComponent(varName)}`
-      + `[(${startISO}):1:(${endISO})]`
-      + `[(${lat}):1:(${lat})]`
-      + `[(${lon}):1:(${lon})]`;
-    return `${ERDDAP_BASE}/${datasetId}.csv?${q}`;
+    // var[(start):1:(end)][(lat):1:(lat)][(lon):1:(lon)]
+    const q = `${varName}[(${startISO}):1:(${endISO})][(${lat}):1:(${lat})][(${lon}):1:(${lon})]`;
+    return `${ERDDAP_BASE}/${datasetId}.csv?${encodeURIComponent(q)}`;
   }
 
   async function fetchCsv(url){
     const res = await fetch(url);
-    if(!res.ok) throw new Error(`Request failed (${res.status}): ${url}`);
-    const text = await res.text();
-    return text;
+    if(!res.ok) throw new Error(`Request failed (${res.status})`);
+    return await res.text();
   }
 
   function parseErddapPointCsv(csvText, valueColumnName){
-    // ERDDAP CSV includes:
-    // row0 = column names, row1 = units, row2+ = data
     const lines = csvText.trim().split(/\r?\n/);
     if(lines.length < 3) return [];
     const headers = lines[0].split(",");
     const colIdx = headers.indexOf(valueColumnName);
     const timeIdx = headers.indexOf("time");
     if(colIdx === -1 || timeIdx === -1) return [];
-
     const rows = [];
     for(let i=2; i<lines.length; i++){
       const cols = lines[i].split(",");
       const t = cols[timeIdx];
       const v = cols[colIdx];
-      // value may be NaN or empty
       const num = (v === "" || v === "NaN") ? null : Number(v);
-      // Keep date only (YYYY-MM-DD)
-      const date = t.slice(0,10);
-      rows.push({ date, value: (Number.isFinite(num) ? num : null) });
+      rows.push({ date: t.slice(0,10), value: Number.isFinite(num) ? num : null });
     }
     return rows;
   }
 
   function mergeByDate(a, b, c){
-    // Build a date-index map then return sorted array
     const m = new Map();
     function add(arr, key){
       for(const r of arr){
-        if(!m.has(r.date)) m.set(r.date, { date: r.date, sst: null, hotspot: null, dhw: null });
+        if(!m.has(r.date)) m.set(r.date, { date:r.date, sst:null, hotspot:null, dhw:null });
         m.get(r.date)[key] = r.value;
       }
     }
-    add(a, "sst");
-    add(b, "hotspot");
-    add(c, "dhw");
-
-    return Array.from(m.values()).sort((x,y)=> x.date.localeCompare(y.date));
+    add(a, "sst"); add(b, "hotspot"); add(c, "dhw");
+    return Array.from(m.values()).sort((x,y)=>x.date.localeCompare(y.date));
   }
 
-  function setStatus(text){
-    statusPill.textContent = text;
+  // ---- Map ----
+  const map = L.map("map", { scrollWheelZoom:false }).setView([-18.5, 147.0], 5);
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map);
+
+  let marker = null;
+  function setMarker(lat, lon){
+    if(marker) marker.remove();
+    marker = L.marker([lat, lon]).addTo(map);
   }
 
-  function setError(msg){
-    errBox.hidden = !msg;
-    errBox.textContent = msg || "";
-  }
+  let selected = { name:"Custom point", lat:-23.4420, lon:151.9140 };
+  setMarker(selected.lat, selected.lon);
 
-  function setLoading(isLoading){
-    loadBtn.disabled = isLoading;
-    document.querySelectorAll(".preset").forEach(b => b.disabled = isLoading);
-    setStatus(isLoading ? "Loading…" : "Ready");
+  function updateLocationPill(){
+    locPill.textContent = `Location: ${selected.name} (${selected.lat.toFixed(3)}, ${selected.lon.toFixed(3)})`;
   }
+  updateLocationPill();
 
-  function setProgress(pct){
-    bar.style.width = `${Math.max(0, Math.min(100, pct))}%`;
+  map.on("click", (e)=>{
+    selected.name = "Custom point";
+    selected.lat = roundTo(e.latlng.lat, 5);
+    selected.lon = roundTo(e.latlng.lng, 5);
+    setMarker(selected.lat, selected.lon);
+    updateLocationPill();
+  });
+
+  document.querySelectorAll(".preset").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      selected.name = btn.dataset.name;
+      selected.lat = parseFloat(btn.dataset.lat);
+      selected.lon = parseFloat(btn.dataset.lon);
+      setMarker(selected.lat, selected.lon);
+      map.setView([selected.lat, selected.lon], 7);
+      updateLocationPill();
+    });
+  });
+
+  // ---- Chart ----
+  const chart = new Chart(el("chart"), {
+    type:"line",
+    data:{ labels:[], datasets:[] },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      interaction:{ mode:"index", intersect:false },
+      plugins:{ legend:{ labels:{ color:"#e9eefb" } } },
+      scales:{
+        x:{ ticks:{ color:"#aab7d1", maxTicksLimit:10 }, grid:{ color:"rgba(255,255,255,.08)" } },
+        y:{ ticks:{ color:"#aab7d1" }, grid:{ color:"rgba(255,255,255,.08)" } }
+      }
+    }
+  });
+
+  function rebuildDatasets(series){
+    const ds = [];
+    if(showSST.checked) ds.push({ label:"SST (°C)", data:series.map(d=>d.sst), borderWidth:2, pointRadius:0, tension:.2 });
+    if(showHotSpot.checked) ds.push({ label:"HotSpot (°C)", data:series.map(d=>d.hotspot), borderWidth:2, pointRadius:0, tension:.2 });
+    if(showDHW.checked) ds.push({ label:"DHW (°C-weeks)", data:series.map(d=>d.dhw), borderWidth:2, pointRadius:0, tension:.2 });
+    chart.data.labels = series.map(d=>d.date);
+    chart.data.datasets = ds;
+    chart.update();
   }
+  [showSST, showHotSpot, showDHW].forEach(cb=>cb.addEventListener("change", ()=>{
+    if(window.__lastSeries?.length) rebuildDatasets(window.__lastSeries);
+  }));
 
-  // -----------------------------
-  // Risk model (simple, teachable)
-  // -----------------------------
+  // ---- Risk ----
   function computeRisk(latest){
-    // Simple rule-of-thumb often used in instruction:
-    // DHW < 4  => low
-    // DHW 4-8  => warning / likely bleaching
-    // DHW >= 8 => high risk / severe bleaching possible
-    // (Students can critique + refine this model.)
-    if(latest == null) return { label:"—", cls:"good", detail:"No DHW value available yet." };
-
+    if(latest == null) return { label:"—", cls:"good", detail:"No DHW value available yet (try a different offshore point)." };
     if(latest < 4) return { label:"LOW", cls:"good", detail:`Latest DHW = ${latest.toFixed(2)} → low accumulated heat stress.` };
     if(latest < 8) return { label:"ELEVATED", cls:"warn", detail:`Latest DHW = ${latest.toFixed(2)} → elevated heat stress; bleaching becomes more likely.` };
-    return { label:"HIGH", cls:"bad", detail:`Latest DHW = ${latest.toFixed(2)} → high heat stress; widespread/severe bleaching possible.` };
+    return { label:"HIGH", cls:"bad", detail:`Latest DHW = ${latest.toFixed(2)} → high heat stress; severe bleaching possible.` };
   }
-
   function updateRisk(series){
-    const last = [...series].reverse().find(d => d.dhw != null)?.dhw ?? null;
+    const last = [...series].reverse().find(d=>d.dhw != null)?.dhw ?? null;
     const r = computeRisk(last);
     riskBadge.textContent = r.label;
     riskBadge.classList.remove("good","warn","bad");
@@ -460,109 +335,85 @@
     riskDetail.textContent = r.detail;
   }
 
-  // -----------------------------
-  // Cache (avoid re-downloading constantly)
-  // -----------------------------
-  const CACHE_KEY = "gbr_crw_cache_v1";
-  function setCache(obj){
-    try{ localStorage.setItem(CACHE_KEY, JSON.stringify(obj)); }catch(e){}
-  }
-  function getCache(){
-    try{
-      const raw = localStorage.getItem(CACHE_KEY);
-      return raw ? JSON.parse(raw) : null;
-    }catch(e){ return null; }
-  }
-  function clearCache(){
-    try{ localStorage.removeItem(CACHE_KEY); }catch(e){}
-  }
-
-  // -----------------------------
-  // Main load
-  // -----------------------------
+  // ---- Load data ----
   async function loadData(){
     setError("");
     setLoading(true);
     setProgress(2);
 
-    const end = new Date(); // now
-    const start = yearsAgoDate(YEARS_BACK);
+    // snap clicked point to grid
+    const snappedLat = snapLat(selected.lat);
+    const snappedLon = snapLon(selected.lon);
+    snapLine.textContent = `Snapped to NOAA 5km grid: (${snappedLat.toFixed(3)}, ${snappedLon.toFixed(3)})`;
+
+    // end date = today-3d (dataset can lag)
+    const end = dateDaysAgo(3);
+    const start = yearsAgoDate(YEARS_BACK, end);
     const chunks = chunkYears(start, end);
 
-    const lat = selected.lat;
-    const lon = selected.lon;
-
-    // Helper that fetches dataset across chunks and concatenates
     async function fetchSeries(dataset){
       const out = [];
       for(let i=0; i<chunks.length; i++){
         const [sISO, eISO] = chunks[i];
-        const url = buildErddapCsvUrl(dataset.id, dataset.var, sISO, eISO, lat, lon);
+        const url = buildErddapCsvUrl(dataset.id, dataset.var, sISO, eISO, snappedLat, snappedLon);
         const csv = await fetchCsv(url);
         const rows = parseErddapPointCsv(csv, dataset.var);
         out.push(...rows);
-        // progress bump
-        const base = 5;
-        const span = 85;
-        const step = span / (chunks.length * 3);
-        setProgress(base + step * (i+1)); // rough
+        setProgress(5 + ((i+1)/(chunks.length))*55);
       }
       return out;
     }
 
     try{
-      // Fetch in parallel per variable (but still chunked inside)
       setStatus("Fetching SST / HotSpot / DHW…");
+
       const [sstRows, hsRows, dhwRows] = await Promise.all([
         fetchSeries(DATASETS.sst),
         fetchSeries(DATASETS.hotspot),
         fetchSeries(DATASETS.dhw)
       ]);
 
-      setProgress(92);
+      setProgress(75);
       setStatus("Merging & plotting…");
 
       const series = mergeByDate(sstRows, hsRows, dhwRows);
 
-      // basic sanity check
-      if(!series.length){
-        throw new Error("No data returned. Try clicking a point a bit farther offshore.");
+      // If everything is null (land/missing), tell the user clearly
+      const hasAnyValue = series.some(d => d.sst != null || d.hotspot != null || d.dhw != null);
+      if(!series.length || !hasAnyValue){
+        throw new Error(
+          "No usable values returned for this point.\n" +
+          "This usually means the snapped grid cell is land/missing.\n\n" +
+          "Try clicking a point farther offshore (deeper water)."
+        );
       }
+
+      window.__lastSeries = series;
 
       rebuildDatasets(series);
       updateRisk(series);
+
       updatedLine.textContent = `Loaded: ${series[0].date} → ${series[series.length-1].date} (daily)`;
       setProgress(100);
+      setStatus("Done");
 
-      // cache
-      setCache({
-        selected,
-        loadedAt: new Date().toISOString(),
-        series
-      });
-
-    } catch (e){
-      setError(
-        "Something went wrong while loading data.\n\n" +
-        "Try:\n" +
-        "• clicking a point farther offshore\n" +
-        "• clicking Load/Refresh again\n\n" +
-        `Details: ${e.message}`
-      );
+    } catch(e){
+      setError(`Couldn’t load data.\n\n${e.message}`);
       setProgress(0);
+      setStatus("Ready");
     } finally{
       setLoading(false);
     }
   }
 
-  loadBtn.addEventListener("click", loadData);
-
-  clearBtn.addEventListener("click", () => {
-    clearCache();
+  el("loadBtn").addEventListener("click", loadData);
+  el("clearBtn").addEventListener("click", ()=>{
+    window.__lastSeries = [];
     chart.data.labels = [];
     chart.data.datasets = [];
     chart.update();
     updatedLine.textContent = "";
+    snapLine.textContent = "";
     riskBadge.textContent = "—";
     riskBadge.classList.remove("warn","bad");
     riskBadge.classList.add("good");
@@ -570,18 +421,6 @@
     setProgress(0);
     setError("");
   });
-
-  // Auto-restore cached series if present
-  const cached = getCache();
-  if(cached?.series?.length){
-    selected = cached.selected || selected;
-    setMarker(selected.lat, selected.lon);
-    map.setView([selected.lat, selected.lon], 7);
-    updateLocationPill();
-    rebuildDatasets(cached.series);
-    updateRisk(cached.series);
-    updatedLine.textContent = `Cached load: ${cached.series[0].date} → ${cached.series[cached.series.length-1].date}`;
-  }
 </script>
 </body>
 </html>
